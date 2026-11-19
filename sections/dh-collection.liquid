@@ -1,0 +1,429 @@
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@400;500;600&family=Bebas+Neue&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+
+<section class="dhc-products" data-dhc-section="{{ section.id }}">
+  {%- paginate collection.products by section.settings.products_per_page -%}
+  <div class="dhc-products__inner">
+
+    <div class="dhc-catalog-head">
+      {%- if section.settings.eyebrow != blank -%}
+        <span class="dhc-eyebrow">{{ section.settings.eyebrow }}</span>
+      {%- endif -%}
+      <h1 class="dhc-title">{{ collection.title | upcase }}<span class="dhc-accent">.</span></h1>
+      {%- if section.settings.show_description and collection.description != blank -%}
+        <div class="dhc-desc">{{ collection.description }}</div>
+      {%- endif -%}
+    </div>
+
+    <div class="dhc-toolbar">
+      <span class="dhc-count">{{ collection.products_count }} {% if collection.products_count == 1 %}PRODUCT{% else %}PRODUCTS{% endif %}</span>
+      {%- if section.settings.show_sort and collection.sort_options.size > 1 -%}
+        <label class="dhc-sort-wrap">
+          <span>SORT BY</span>
+          <select class="dhc-sort" data-dhc-sort>
+            {%- assign current_sort = collection.sort_by | default: collection.default_sort_by -%}
+            {%- for option in collection.sort_options -%}
+              <option value="{{ option.value }}"{% if option.value == current_sort %} selected{% endif %}>{{ option.name }}</option>
+            {%- endfor -%}
+          </select>
+        </label>
+      {%- endif -%}
+    </div>
+
+    <div class="dhc-card-grid">
+      {%- for product in collection.products -%}
+        <article class="dhc-card">
+          <a class="dhc-image-zone" href="{{ product.url }}" aria-label="{{ product.title | escape }}">
+            {%- if product.featured_image != blank -%}
+              {{ product.featured_image | image_url: width: 200 | image_tag: class: 'dhc-image-bg', alt: '', loading: 'lazy', widths: '200' }}
+              {{ product.featured_image | image_url: width: 700 | image_tag: class: 'dhc-image-fg', alt: product.featured_image.alt | default: product.title, loading: 'lazy', widths: '350, 500, 700', sizes: '(min-width: 600px) 300px, 90vw' }}
+            {%- endif -%}
+          </a>
+
+          <div class="dhc-info-panel">
+            <h3 class="dhc-product-name"><a href="{{ product.url }}">{{ product.title }}</a></h3>
+            <p class="dhc-product-desc">{{ product.description | strip_html | truncate: 110 }}</p>
+            <span class="dhc-stock-status">{% if product.available %}In stock{% else %}Sold out{% endif %}</span>
+
+            <div class="dhc-card-actions">
+              <span class="dhc-price-pill">{{ product.price | money }}</span>
+              {%- if product.available -%}
+                {%- if product.has_only_default_variant -%}
+                  <button type="button" class="dhc-add" data-variant-id="{{ product.selected_or_first_available_variant.id }}">Add to Cart</button>
+                {%- else -%}
+                  <a class="dhc-add" href="{{ product.url }}">Choose options</a>
+                {%- endif -%}
+              {%- else -%}
+                <button type="button" class="dhc-add" disabled>Sold out</button>
+              {%- endif -%}
+            </div>
+          </div>
+        </article>
+      {%- else -%}
+        <p class="dhc-empty">No products found here yet.</p>
+      {%- endfor -%}
+    </div>
+
+    {%- if paginate.pages > 1 -%}
+      <nav class="dhc-pagination" aria-label="Pagination">
+        {%- if paginate.previous -%}
+          <a class="dhc-page-btn" href="{{ paginate.previous.url }}">&larr; Prev</a>
+        {%- else -%}
+          <span class="dhc-page-btn is-disabled">&larr; Prev</span>
+        {%- endif -%}
+        <span class="dhc-page-status">PAGE {{ paginate.current_page }} / {{ paginate.pages }}</span>
+        {%- if paginate.next -%}
+          <a class="dhc-page-btn" href="{{ paginate.next.url }}">Next &rarr;</a>
+        {%- else -%}
+          <span class="dhc-page-btn is-disabled">Next &rarr;</span>
+        {%- endif -%}
+      </nav>
+    {%- endif -%}
+
+  </div>
+  {%- endpaginate -%}
+</section>
+
+{% stylesheet %}
+  .dhc-products {
+    --bg: #0E1A17;
+    --bg-soft: #142621;
+    --tangerine: #FF6B35;
+    --lime: #C6F135;
+    --hotpink: #FF2E63;
+    --cream: #FFF8ED;
+    --cream-dim: #C9C2B3;
+    --line: rgba(255,248,237,0.14);
+    --white: #ffffff;
+
+    background: #000;
+    font-family: 'Inter', sans-serif;
+  }
+  .dhc-products *, .dhc-products *::before, .dhc-products *::after { box-sizing: border-box; }
+
+  .dhc-products__inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: clamp(2.5rem, 6vw, 4rem) clamp(1.5rem, 4vw, 3rem) clamp(3rem, 7vw, 5rem);
+  }
+
+  /* ---- catalog header ---- */
+  .dhc-catalog-head { margin-bottom: clamp(1.5rem, 4vw, 2.5rem); }
+  .dhc-eyebrow {
+    display: inline-block;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--white);
+    margin-bottom: 0.6rem;
+  }
+  .dhc-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-weight: 400;
+    font-size: clamp(48px, 7vw, 84px);
+    line-height: 0.9;
+    color: var(--cream);
+    letter-spacing: 1px;
+    margin: 0;
+    text-transform: none;
+  }
+  .dhc-title .dhc-accent { color: var(--tangerine); }
+  .dhc-desc {
+    max-width: 560px;
+    margin-top: 1rem;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: var(--cream-dim);
+  }
+  .dhc-desc p { margin: 0; }
+
+  /* ---- toolbar ---- */
+  .dhc-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+    padding: 0.9rem 0;
+    margin-bottom: 2rem;
+    border-top: 1px dashed var(--line);
+    border-bottom: 1px dashed var(--line);
+  }
+  .dhc-count {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 1.5px;
+    color: var(--lime);
+  }
+  .dhc-sort-wrap {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 1.5px;
+    color: var(--cream-dim);
+  }
+  .dhc-sort {
+    background: var(--bg-soft);
+    color: var(--cream);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 0.5rem 0.8rem;
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    cursor: pointer;
+    outline: none;
+  }
+  .dhc-sort:focus { border-color: var(--lime); }
+
+  .dhc-card-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1.5rem;
+  }
+  .dhc-empty {
+    color: var(--white);
+    text-align: center;
+    opacity: 0.7;
+  }
+
+  /* ---- product card ---- */
+  .dhc-card {
+    position: relative;
+    height: 460px;
+    border-radius: 14px;
+    overflow: hidden;
+    background: var(--bg-soft);
+    display: flex;
+    flex: 0 0 300px;
+    max-width: 100%;
+    flex-direction: column;
+  }
+  .dhc-image-zone {
+    position: relative;
+    display: block;
+    height: 65%;
+    overflow: hidden;
+    background: var(--bg-soft);
+  }
+  .dhc-image-zone .dhc-image-bg {
+    position: absolute;
+    top: -20px;
+    left: -20px;
+    width: calc(100% + 40px);
+    height: calc(100% + 40px);
+    max-width: none;
+    object-fit: cover;
+    filter: blur(25px) brightness(0.85) saturate(1.1);
+    transform: scale(1.15);
+  }
+  .dhc-image-zone .dhc-image-fg {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    height: 100%;
+    max-width: none;
+    object-fit: cover;
+    transition: transform 0.4s ease;
+  }
+  .dhc-card:hover .dhc-image-fg { transform: scale(1.04); }
+
+  .dhc-info-panel {
+    position: relative;
+    z-index: 1;
+    flex: 1;
+    background: var(--bg-soft);
+    padding: 0.85rem 1.1rem 1.1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+  .dhc-product-name {
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+    font-size: 1.1rem;
+    line-height: 1.25;
+    margin: 0;
+    text-transform: none;
+    letter-spacing: normal;
+  }
+  .dhc-product-name a {
+    color: var(--lime);
+    text-decoration: none;
+  }
+  .dhc-product-desc {
+    margin: 0;
+    font-size: 0.8rem;
+    color: rgba(245, 240, 230, 0.7);
+    line-height: 1.4;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .dhc-stock-status {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--hotpink);
+    letter-spacing: 0.2px;
+    margin-top: 0.1rem;
+  }
+  .dhc-card-actions {
+    margin-top: 0.4rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.6rem;
+  }
+  .dhc-price-pill {
+    flex: 0 0 auto;
+    border: 1px solid var(--lime);
+    color: var(--lime);
+    font-weight: 600;
+    font-size: 0.9rem;
+    padding: 0.5rem 1rem;
+    border-radius: 999px;
+    white-space: nowrap;
+  }
+  .dhc-add {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--lime);
+    color: var(--bg);
+    border: none;
+    border-radius: 999px;
+    padding: 0.55rem 1rem;
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 0.85rem;
+    letter-spacing: 0.2px;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background 0.2s ease, color 0.2s ease, transform 0.15s ease;
+  }
+  .dhc-add:hover,
+  .dhc-add.added {
+    background: var(--bg);
+    color: var(--lime);
+  }
+  .dhc-add:active { transform: scale(0.96); }
+  .dhc-add:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  .dhc-products a:focus-visible,
+  .dhc-products button:focus-visible {
+    outline: 2px solid var(--lime);
+    outline-offset: 3px;
+  }
+
+  /* ---- pagination ---- */
+  .dhc-pagination {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1.25rem;
+    margin-top: 2.5rem;
+  }
+  .dhc-page-status {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 1.5px;
+    color: var(--cream-dim);
+  }
+  .dhc-page-btn {
+    font-family: 'Space Grotesk', 'Inter', sans-serif;
+    font-weight: 700;
+    font-size: 13px;
+    color: var(--bg);
+    background: var(--lime);
+    border-radius: 999px;
+    padding: 0.55rem 1.1rem;
+    text-decoration: none;
+    transition: transform 0.15s ease;
+  }
+  .dhc-page-btn:hover { transform: translateY(-2px); }
+  .dhc-page-btn.is-disabled {
+    background: transparent;
+    border: 1px solid var(--line);
+    color: var(--cream-dim);
+    opacity: 0.5;
+    pointer-events: none;
+  }
+{% endstylesheet %}
+
+<script>
+  (function () {
+    var root = document.querySelector('[data-dhc-section="{{ section.id }}"]');
+    if (!root) return;
+
+    var sort = root.querySelector('[data-dhc-sort]');
+    if (sort) {
+      sort.addEventListener('change', function () {
+        var url = new URL(window.location.href);
+        url.searchParams.set('sort_by', sort.value);
+        url.searchParams.delete('page');
+        window.location.href = url.toString();
+      });
+    }
+
+    root.addEventListener('click', function (e) {
+      var btn = e.target.closest('.dhc-add[data-variant-id]');
+      if (!btn || btn.disabled) return;
+
+      var label = btn.textContent;
+      function reset() {
+        btn.textContent = label;
+        btn.classList.remove('added');
+        btn.disabled = false;
+      }
+
+      btn.disabled = true;
+      btn.textContent = 'Adding…';
+
+      fetch('{{ routes.cart_add_url }}.js', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify({ items: [{ id: Number(btn.dataset.variantId), quantity: 1 }] })
+      })
+        .then(function (res) {
+          if (!res.ok) throw new Error('add failed');
+          return res.json();
+        })
+        .then(function () {
+          return fetch('{{ routes.cart_url }}.js', { headers: { 'Accept': 'application/json' } });
+        })
+        .then(function (res) { return res.json(); })
+        .then(function (cart) {
+          document.querySelectorAll('.dh-cart-badge').forEach(function (b) {
+            b.textContent = cart.item_count;
+          });
+          btn.textContent = 'Added ✓';
+          btn.classList.add('added');
+          setTimeout(reset, 1600);
+        })
+        .catch(function () {
+          btn.textContent = 'Try again';
+          setTimeout(reset, 1600);
+        });
+    });
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Dripstone Catalog",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Shop the collection" },
+    { "type": "checkbox", "id": "show_description", "label": "Show collection description", "default": true },
+    { "type": "checkbox", "id": "show_sort", "label": "Show sort menu", "default": true },
+    { "type": "range", "id": "products_per_page", "label": "Products per page", "min": 4, "max": 24, "step": 4, "default": 12 }
+  ]
+}
+{% endschema %}

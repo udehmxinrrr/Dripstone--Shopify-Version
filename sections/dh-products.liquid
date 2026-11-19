@@ -3,62 +3,63 @@
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 
 {%- assign source = section.settings.collection | default: collections.all -%}
+{%- assign source_products = source.products -%}
 
 <section
-  class="dh-products"
-  id="{{ section.settings.anchor | default: section.id }}"
-  data-dh-section="{{ section.id }}">
-  <div class="dh-products__inner">
-    <div class="dh-section-header">
+  class="dhp-products"
+  id="products-section"
+  data-dhp-section="{{ section.id }}">
+  <div class="dhp-products__inner">
+    <div class="dhp-section-header">
       {%- if section.settings.eyebrow != blank -%}
-        <span class="dh-section-eyebrow">{{ section.settings.eyebrow }}</span>
+        <span class="dhp-section-eyebrow">{{ section.settings.eyebrow }}</span>
       {%- endif -%}
       {%- if section.settings.title != blank -%}
-        <h2 class="dh-section-title">{{ section.settings.title }}</h2>
+        <h2 class="dhp-section-title">{{ section.settings.title }}</h2>
       {%- endif -%}
       {%- if section.settings.subtitle != blank -%}
-        <p class="dh-section-subtitle">{{ section.settings.subtitle }}</p>
+        <p class="dhp-section-subtitle">{{ section.settings.subtitle }}</p>
       {%- endif -%}
     </div>
 
-    <div class="dh-card-grid">
-      {%- for product in source.products limit: section.settings.products_to_show -%}
-        <article class="dh-card">
-          <a class="dh-image-zone" href="{{ product.url }}" aria-label="{{ product.title | escape }}">
+    <div class="dhp-card-grid">
+      {%- for product in source_products limit: section.settings.products_to_show -%}
+        <article class="dhp-card">
+          <a class="dhp-image-zone" href="{{ product.url }}" aria-label="{{ product.title | escape }}">
             {%- if product.featured_image != blank -%}
-              {{ product.featured_image | image_url: width: 200 | image_tag: class: 'dh-image-bg', alt: '', loading: 'lazy', widths: '200' }}
-              {{ product.featured_image | image_url: width: 700 | image_tag: class: 'dh-image-fg', alt: product.featured_image.alt | default: product.title, loading: 'lazy', widths: '350, 500, 700', sizes: '(min-width: 600px) 300px, 90vw' }}
+              {{ product.featured_image | image_url: width: 200 | image_tag: class: 'dhp-image-bg', alt: '', loading: 'lazy', widths: '200' }}
+              {{ product.featured_image | image_url: width: 700 | image_tag: class: 'dhp-image-fg', alt: product.featured_image.alt | default: product.title, loading: 'lazy', widths: '350, 500, 700', sizes: '(min-width: 600px) 300px, 90vw' }}
             {%- endif -%}
           </a>
 
-          <div class="dh-info-panel">
-            <h3 class="dh-product-name"><a href="{{ product.url }}">{{ product.title }}</a></h3>
-            <p class="dh-product-desc">{{ product.description | strip_html | truncate: 110 }}</p>
-            <span class="dh-stock-status">{% if product.available %}In stock{% else %}Sold out{% endif %}</span>
+          <div class="dhp-info-panel">
+            <h3 class="dhp-product-name"><a href="{{ product.url }}">{{ product.title }}</a></h3>
+            <p class="dhp-product-desc">{{ product.description | strip_html | truncate: 110 }}</p>
+            <span class="dhp-stock-status">{% if product.available %}In stock{% else %}Sold out{% endif %}</span>
 
-            <div class="dh-card-actions">
-              <span class="dh-price-pill">{{ product.price | money }}</span>
+            <div class="dhp-card-actions">
+              <span class="dhp-price-pill">{{ product.price | money }}</span>
               {%- if product.available -%}
                 {%- if product.has_only_default_variant -%}
-                  <button type="button" class="dh-add" data-variant-id="{{ product.selected_or_first_available_variant.id }}">Add to Cart</button>
+                  <button type="button" class="dhp-add" data-variant-id="{{ product.selected_or_first_available_variant.id }}">Add to Cart</button>
                 {%- else -%}
-                  <a class="dh-add" href="{{ product.url }}">Choose options</a>
+                  <a class="dhp-add" href="{{ product.url }}">Choose options</a>
                 {%- endif -%}
               {%- else -%}
-                <button type="button" class="dh-add" disabled>Sold out</button>
+                <button type="button" class="dhp-add" disabled>Sold out</button>
               {%- endif -%}
             </div>
           </div>
         </article>
       {%- else -%}
-        <p class="dh-empty">No products here yet. Add products in Shopify admin, or pick a collection in this section's settings.</p>
+        <p class="dhp-empty">No products here yet. Add products in Shopify admin, or pick a collection in this section's settings.</p>
       {%- endfor -%}
     </div>
   </div>
 </section>
 
 {% stylesheet %}
-  .dh-products {
+  .dhp-products {
     --bg: #0E1A17;
     --bg-soft: #142621;
     --tangerine: #FF6B35;
@@ -70,21 +71,21 @@
     font-family: 'Inter', sans-serif;
     scroll-margin-top: 72px;
   }
-  .dh-products *, .dh-products *::before, .dh-products *::after { box-sizing: border-box; }
+  .dhp-products *, .dhp-products *::before, .dhp-products *::after { box-sizing: border-box; }
 
-  .dh-products__inner {
+  .dhp-products__inner {
     max-width: 1100px;
     margin: 0 auto;
     padding: clamp(3rem, 6vw, 5rem) clamp(1.5rem, 4vw, 3rem);
   }
 
   /* ---- section header ---- */
-  .dh-section-header {
+  .dhp-section-header {
     text-align: center;
     max-width: 560px;
     margin: 0 auto clamp(2rem, 5vw, 3rem);
   }
-  .dh-section-eyebrow {
+  .dhp-section-eyebrow {
     display: inline-block;
     font-size: 0.75rem;
     font-weight: 600;
@@ -93,7 +94,7 @@
     color: var(--white);
     margin-bottom: 0.6rem;
   }
-  .dh-section-title {
+  .dhp-section-title {
     font-family: 'Playfair Display', serif;
     font-weight: 700;
     font-size: clamp(1.8rem, 4vw, 2.4rem);
@@ -103,27 +104,27 @@
     text-transform: none;
     letter-spacing: normal;
   }
-  .dh-section-subtitle {
+  .dhp-section-subtitle {
     margin: 0.7rem 0 0;
     font-size: 0.95rem;
     color: var(--tangerine);
     line-height: 1.5;
   }
 
-  .dh-card-grid {
+  .dhp-card-grid {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
     gap: 1.5rem;
   }
-  .dh-empty {
+  .dhp-empty {
     color: var(--white);
     text-align: center;
     opacity: 0.7;
   }
 
   /* ---- product card ---- */
-  .dh-card {
+  .dhp-card {
     position: relative;
     height: 460px;
     border-radius: 14px;
@@ -134,14 +135,14 @@
     max-width: 100%;
     flex-direction: column;
   }
-  .dh-image-zone {
+  .dhp-image-zone {
     position: relative;
     display: block;
     height: 65%;
     overflow: hidden;
     background: var(--bg-soft);
   }
-  .dh-image-zone .dh-image-bg {
+  .dhp-image-zone .dhp-image-bg {
     position: absolute;
     top: -20px;
     left: -20px;
@@ -152,7 +153,7 @@
     filter: blur(25px) brightness(0.85) saturate(1.1);
     transform: scale(1.15);
   }
-  .dh-image-zone .dh-image-fg {
+  .dhp-image-zone .dhp-image-fg {
     position: relative;
     z-index: 1;
     width: 100%;
@@ -161,9 +162,9 @@
     object-fit: cover;
     transition: transform 0.4s ease;
   }
-  .dh-card:hover .dh-image-fg { transform: scale(1.04); }
+  .dhp-card:hover .dhp-image-fg { transform: scale(1.04); }
 
-  .dh-info-panel {
+  .dhp-info-panel {
     position: relative;
     z-index: 1;
     flex: 1;
@@ -173,7 +174,7 @@
     flex-direction: column;
     gap: 0.35rem;
   }
-  .dh-product-name {
+  .dhp-product-name {
     font-family: 'Playfair Display', serif;
     font-weight: 700;
     font-size: 1.1rem;
@@ -182,11 +183,11 @@
     text-transform: none;
     letter-spacing: normal;
   }
-  .dh-product-name a {
+  .dhp-product-name a {
     color: var(--lime);
     text-decoration: none;
   }
-  .dh-product-desc {
+  .dhp-product-desc {
     margin: 0;
     font-size: 0.8rem;
     color: rgba(245, 240, 230, 0.7);
@@ -196,21 +197,21 @@
     -webkit-box-orient: vertical;
     overflow: hidden;
   }
-  .dh-stock-status {
+  .dhp-stock-status {
     font-size: 0.75rem;
     font-weight: 600;
     color: var(--hotpink);
     letter-spacing: 0.2px;
     margin-top: 0.1rem;
   }
-  .dh-card-actions {
+  .dhp-card-actions {
     margin-top: 0.4rem;
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 0.6rem;
   }
-  .dh-price-pill {
+  .dhp-price-pill {
     flex: 0 0 auto;
     border: 1px solid var(--lime);
     color: var(--lime);
@@ -220,7 +221,7 @@
     border-radius: 999px;
     white-space: nowrap;
   }
-  .dh-add {
+  .dhp-add {
     flex: 1;
     display: flex;
     align-items: center;
@@ -238,18 +239,18 @@
     cursor: pointer;
     transition: background 0.2s ease, color 0.2s ease, transform 0.15s ease;
   }
-  .dh-add:hover,
-  .dh-add.added {
+  .dhp-add:hover,
+  .dhp-add.added {
     background: var(--bg);
     color: var(--lime);
   }
-  .dh-add:active { transform: scale(0.96); }
-  .dh-add:disabled {
+  .dhp-add:active { transform: scale(0.96); }
+  .dhp-add:disabled {
     opacity: 0.5;
     cursor: not-allowed;
   }
-  .dh-products a:focus-visible,
-  .dh-products button:focus-visible {
+  .dhp-products a:focus-visible,
+  .dhp-products button:focus-visible {
     outline: 2px solid var(--lime);
     outline-offset: 3px;
   }
@@ -257,11 +258,11 @@
 
 <script>
   (function () {
-    var root = document.querySelector('[data-dh-section="{{ section.id }}"]');
+    var root = document.querySelector('[data-dhp-section="{{ section.id }}"]');
     if (!root) return;
 
     root.addEventListener('click', function (e) {
-      var btn = e.target.closest('.dh-add[data-variant-id]');
+      var btn = e.target.closest('.dhp-add[data-variant-id]');
       if (!btn || btn.disabled) return;
 
       var label = btn.textContent;
@@ -314,22 +315,8 @@
 
     { "type": "header", "content": "Products" },
     { "type": "collection", "id": "collection", "label": "Collection", "info": "Leave empty to show all products." },
-    { "type": "range", "id": "products_to_show", "label": "Max products", "min": 2, "max": 24, "step": 1, "default": 8 },
-
-    { "type": "header", "content": "Menu link" },
-    { "type": "text", "id": "anchor", "label": "Anchor ID", "info": "Link to this section from your menu with /#this-id.", "default": "products-section" }
+    { "type": "range", "id": "products_to_show", "label": "Max products", "min": 2, "max": 24, "step": 1, "default": 8 }
   ],
-  "presets": [
-    { "name": "Dripstone Products" },
-    {
-      "name": "Dripstone Offers",
-      "settings": {
-        "eyebrow": "While stock lasts",
-        "title": "This Week's Drop",
-        "subtitle": "Small batches, no restocks. Once these sell out, they're gone for good.",
-        "anchor": "offer-section"
-      }
-    }
-  ]
+  "presets": [{ "name": "Dripstone Products" }]
 }
 {% endschema %}

@@ -1,0 +1,281 @@
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Bebas+Neue&family=JetBrains+Mono:wght@500;700&family=Space+Grotesk:wght@700&display=swap" rel="stylesheet">
+
+<section class="dhk-contact">
+  <div class="dhk-contact__inner">
+    <h1 class="dhk-title">{{ section.settings.title_a }} <span class="dhk-accent">{{ section.settings.title_b }}</span></h1>
+    {%- if section.settings.subtext != blank -%}
+      <p class="dhk-sub">{{ section.settings.subtext }}</p>
+    {%- endif -%}
+
+    <div class="dhk-layout">
+
+      <div class="dhk-card">
+        <p class="dhk-card__label">SEND A MESSAGE</p>
+
+        {%- form 'contact', id: 'dh-contact-form', class: 'dhk-form' -%}
+          {%- if form.posted_successfully? -%}
+            <p class="dhk-msg" role="status">{{ section.settings.success_message }}</p>
+          {%- else -%}
+            {%- if form.errors -%}
+              <ul class="dhk-errors" role="alert">
+                {%- for field in form.errors -%}
+                  <li>
+                    {%- if field == 'form' -%}
+                      {{ form.errors.messages[field] }}
+                    {%- else -%}
+                      {{ form.errors.translated_fields[field] | capitalize }} {{ form.errors.messages[field] }}
+                    {%- endif -%}
+                  </li>
+                {%- endfor -%}
+              </ul>
+            {%- endif -%}
+
+            <div class="dhk-row">
+              <div class="dhk-field">
+                <label for="dhk-name">Name</label>
+                <input type="text" id="dhk-name" name="contact[name]" autocomplete="name" value="{% if form.name %}{{ form.name }}{% elsif customer %}{{ customer.name }}{% endif %}">
+              </div>
+              <div class="dhk-field">
+                <label for="dhk-email">Email</label>
+                <input type="email" id="dhk-email" name="contact[email]" autocomplete="email" required value="{% if form.email %}{{ form.email }}{% elsif customer %}{{ customer.email }}{% endif %}">
+              </div>
+            </div>
+
+            <div class="dhk-field">
+              <label for="dhk-phone">Phone <span>(optional)</span></label>
+              <input type="tel" id="dhk-phone" name="contact[phone]" autocomplete="tel" value="{{ form.phone }}">
+            </div>
+
+            <div class="dhk-field">
+              <label for="dhk-body">Message</label>
+              <textarea id="dhk-body" name="contact[body]" rows="5" required>{{ form.body }}</textarea>
+            </div>
+
+            <button type="submit" class="dhk-btn">{{ section.settings.button_label }}</button>
+          {%- endif -%}
+        {%- endform -%}
+      </div>
+
+      <aside class="dhk-info">
+        <p class="dhk-info__label">FIND US</p>
+        {%- if section.settings.location != blank -%}
+          <div class="dhk-info__row"><span>LOCATION</span><span>{{ section.settings.location }}</span></div>
+        {%- endif -%}
+        {%- if section.settings.website != blank -%}
+          <div class="dhk-info__row"><span>WEBSITE</span><span>{{ section.settings.website }}</span></div>
+        {%- endif -%}
+        {%- if section.settings.phone != blank -%}
+          <div class="dhk-info__row"><span>PHONE</span><span>{{ section.settings.phone }}</span></div>
+        {%- endif -%}
+        {%- if section.settings.hours != blank -%}
+          <div class="dhk-info__row dhk-info__row--last"><span>HOURS</span><span>{{ section.settings.hours }}</span></div>
+        {%- endif -%}
+      </aside>
+
+    </div>
+  </div>
+</section>
+
+{% stylesheet %}
+  .dhk-contact {
+    --bg: #0E1A17;
+    --bg-soft: #142621;
+    --tangerine: #FF6B35;
+    --lime: #C6F135;
+    --hotpink: #FF2E63;
+    --cream: #FFF8ED;
+    --cream-dim: #C9C2B3;
+    --line: rgba(255,248,237,0.14);
+
+    background: #000;
+    font-family: 'Inter', sans-serif;
+  }
+  .dhk-contact *, .dhk-contact *::before, .dhk-contact *::after { box-sizing: border-box; }
+
+  .dhk-contact__inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: clamp(2.5rem, 6vw, 4rem) clamp(1.5rem, 4vw, 3rem) clamp(3rem, 7vw, 5rem);
+  }
+  .dhk-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-weight: 400;
+    font-size: clamp(48px, 7vw, 84px);
+    line-height: 0.9;
+    color: var(--cream);
+    letter-spacing: 1px;
+    margin: 0;
+    text-transform: none;
+  }
+  .dhk-title .dhk-accent { color: var(--tangerine); }
+  .dhk-sub {
+    max-width: 480px;
+    margin: 1rem 0 0;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: var(--cream-dim);
+  }
+
+  .dhk-layout {
+    display: grid;
+    grid-template-columns: 1.6fr 1fr;
+    gap: clamp(1.5rem, 4vw, 2.5rem);
+    align-items: start;
+    margin-top: clamp(2rem, 5vw, 3rem);
+  }
+
+  /* ---- form card (ticket stub) ---- */
+  .dhk-card {
+    background: var(--cream);
+    border-radius: 12px;
+    padding: 1.4rem 1.5rem;
+    box-shadow: 0 14px 30px rgba(0,0,0,0.25);
+  }
+  .dhk-card__label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 1.5px;
+    color: #993C1D;
+    margin: 0 0 1rem;
+  }
+  .dhk-form { margin: 0; scroll-margin-top: 120px; }
+  .dhk-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.8rem;
+  }
+  .dhk-field { margin-bottom: 0.9rem; }
+  .dhk-field label {
+    display: block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--bg);
+    opacity: 0.7;
+    margin-bottom: 6px;
+  }
+  .dhk-field label span { text-transform: none; opacity: 0.8; }
+  .dhk-field input,
+  .dhk-field textarea {
+    width: 100%;
+    background: var(--bg-soft);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 0.7rem 0.85rem;
+    color: var(--cream);
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    outline: none;
+    box-shadow: none;
+    transition: border-color 0.2s ease;
+    resize: vertical;
+  }
+  .dhk-field input:focus,
+  .dhk-field textarea:focus { border-color: var(--lime); }
+
+  .dhk-btn {
+    width: 100%;
+    margin-top: 0.4rem;
+    background: var(--lime);
+    color: var(--bg);
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700;
+    font-size: 14px;
+    padding: 14px 0;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: 0 6px 0 rgba(0,0,0,0.25);
+  }
+  .dhk-btn:hover { transform: translateY(-2px); }
+  .dhk-btn:active { transform: translateY(2px); box-shadow: 0 2px 0 rgba(0,0,0,0.25); }
+
+  .dhk-msg {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--bg);
+    margin: 0;
+    padding: 1rem 0;
+  }
+  .dhk-errors {
+    list-style: none;
+    margin: 0 0 1rem;
+    padding: 0;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: #c0204a;
+  }
+
+  /* ---- info panel (receipt) ---- */
+  .dhk-info {
+    background: var(--bg-soft);
+    border: 1px dashed var(--line);
+    border-radius: 12px;
+    padding: 1.4rem 1.5rem;
+  }
+  .dhk-info__label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 1.5px;
+    color: var(--lime);
+    margin: 0 0 1rem;
+  }
+  .dhk-info__row {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--cream-dim);
+    margin-bottom: 0.6rem;
+  }
+  .dhk-info__row span:last-child { color: var(--cream); text-align: right; }
+  .dhk-info__row--last {
+    border-top: 1px dashed var(--line);
+    padding-top: 0.8rem;
+    margin-top: 0.4rem;
+    margin-bottom: 0;
+  }
+
+  .dhk-contact button:focus-visible,
+  .dhk-contact input:focus-visible,
+  .dhk-contact textarea:focus-visible {
+    outline: 2px solid var(--lime);
+    outline-offset: 2px;
+  }
+
+  @media (max-width: 900px) {
+    .dhk-layout { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 560px) {
+    .dhk-row { grid-template-columns: 1fr; }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Dripstone Contact",
+  "settings": [
+    { "type": "header", "content": "Heading" },
+    { "type": "text", "id": "title_a", "label": "Title, first part", "default": "GET IN" },
+    { "type": "text", "id": "title_b", "label": "Title, orange part", "default": "TOUCH." },
+    { "type": "textarea", "id": "subtext", "label": "Subtext", "default": "Questions about an order, sizing, or a drop? Send us a message and we'll get back to you." },
+
+    { "type": "header", "content": "Form" },
+    { "type": "text", "id": "button_label", "label": "Button label", "default": "Send message" },
+    { "type": "text", "id": "success_message", "label": "Success message", "default": "Message sent. We'll reply to your email soon." },
+
+    { "type": "header", "content": "Find us" },
+    { "type": "text", "id": "location", "label": "Location", "default": "Nairobi, Kenya" },
+    { "type": "text", "id": "website", "label": "Website", "default": "DripStone.co.ke" },
+    { "type": "text", "id": "phone", "label": "Phone", "default": "+254 712 345 678" },
+    { "type": "text", "id": "hours", "label": "Hours", "info": "Optional.", "default": "Mon–Sat, 9am–6pm" }
+  ],
+  "presets": [{ "name": "Dripstone Contact" }]
+}
+{% endschema %}

@@ -8,11 +8,10 @@
  * ------------------------------------------------------------
  */
 {
-  "name": "t:sections.footer.name",
+  "name": "Footer",
   "type": "footer",
   "sections": {
-    
+    "dh_footer": { "type": "dh-footer", "settings": {} }
   },
-  "order": [
-  ]
+  "order": ["dh_footer"]
 }

@@ -5,7 +5,7 @@
   "theme_version": "1.0.0",
   "theme_author": "Masterden",
   "theme_documentation_url": "https://masterden.pages.dev/",
-  "theme_support_url": "mailto:you@example.com"
+  "theme_support_url": "you@example.com"
 },
   {
     "name": "t:settings_schema.logo.name",
