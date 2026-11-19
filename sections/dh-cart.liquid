@@ -1,0 +1,498 @@
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@400;500;600&family=Bebas+Neue&family=JetBrains+Mono:wght@500;700&family=Space+Grotesk:wght@700&display=swap" rel="stylesheet">
+
+<div class="dh-cart" data-dh-cart="{{ section.id }}">
+  <main class="dh-cart-page">
+    <h1 class="dh-cart-title">{{ section.settings.title_a }} <span class="dh-accent">{{ section.settings.title_b }}</span></h1>
+    <p class="dh-cart-msg" data-dh-cart-msg role="alert" hidden></p>
+
+    {%- if cart.item_count > 0 -%}
+      <form id="dh-cart-form" action="{{ routes.cart_url }}" method="post"></form>
+
+      <div class="dh-cart-layout">
+        <div class="dh-cart-items">
+          {%- for item in cart.items -%}
+            <div class="dh-cart-item">
+              {%- if item.image != blank -%}
+                {{ item.image | image_url: width: 160 | image_tag: class: 'dh-cart-item__thumb', width: 72, height: 72, loading: 'lazy', alt: item.product.title }}
+              {%- else -%}
+                <div class="dh-cart-item__thumb dh-cart-item__thumb--empty"></div>
+              {%- endif -%}
+
+              <div class="dh-cart-item__info">
+                <div class="dh-cart-item__name"><a href="{{ item.url }}">{{ item.product.title }}</a></div>
+                {%- unless item.product.has_only_default_variant -%}
+                  <div class="dh-cart-item__meta">{{ item.variant.title }}</div>
+                {%- endunless -%}
+
+                <div class="dh-qty-stepper">
+                  <button type="button" class="dh-qty-btn" data-dh-line="{{ forloop.index }}" data-dh-qty="{{ item.quantity | minus: 1 }}" aria-label="Decrease quantity">&minus;</button>
+                  <span class="dh-qty-value">{{ item.quantity }}</span>
+                  <button type="button" class="dh-qty-btn" data-dh-line="{{ forloop.index }}" data-dh-qty="{{ item.quantity | plus: 1 }}" aria-label="Increase quantity">+</button>
+                </div>
+              </div>
+
+              <div class="dh-cart-item__side">
+                <button type="button" class="dh-remove-btn" data-dh-line="{{ forloop.index }}" data-dh-qty="0" aria-label="Remove {{ item.product.title | escape }}">&times;</button>
+                <span class="dh-cart-item__price">
+                  {%- if item.original_line_price != item.final_line_price -%}
+                    <s>{{ item.original_line_price | money }}</s>
+                  {%- endif -%}
+                  {{ item.final_line_price | money }}
+                </span>
+              </div>
+            </div>
+          {%- endfor -%}
+        </div>
+
+        <aside class="dh-order-summary">
+          <p class="dh-order-summary__label">ORDER SUMMARY</p>
+          <div class="dh-order-row"><span>ITEMS</span><span>{{ cart.item_count }}</span></div>
+          <div class="dh-order-row"><span>SUBTOTAL</span><span>{{ cart.original_total_price | money }}</span></div>
+          {%- if cart.total_discount > 0 -%}
+            <div class="dh-order-row"><span>DISCOUNT</span><span>&minus;{{ cart.total_discount | money }}</span></div>
+          {%- endif -%}
+          <div class="dh-order-row"><span>SHIPPING</span><span>AT CHECKOUT</span></div>
+          <div class="dh-order-row dh-order-total"><span>TOTAL</span><span>{{ cart.total_price | money }}</span></div>
+          <button type="submit" name="checkout" form="dh-cart-form" class="dh-btn-checkout">Checkout</button>
+        </aside>
+      </div>
+    {%- else -%}
+      <div class="dh-cart-empty">
+        <h2 class="dh-cart-empty__headline">{{ section.settings.empty_a }} <span class="dh-outline">{{ section.settings.empty_b }}</span></h2>
+        <p class="dh-cart-empty__sub">{{ section.settings.empty_sub }}</p>
+        <div class="dh-cart-empty__actions">
+          <a href="{{ routes.root_url }}#products-section" class="dh-btn-primary">
+            {{ section.settings.shop_label }}
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2 8H14M14 8L9 3M14 8L9 13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </a>
+          <a href="{{ routes.root_url }}#offer-section" class="dh-btn-primary">
+            {{ section.settings.offers_label }}
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2 8H14M14 8L9 3M14 8L9 13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </a>
+        </div>
+      </div>
+    {%- endif -%}
+  </main>
+
+  {%- if cart.item_count > 0 -%}
+    <div class="dh-mobile-checkout">
+      <p class="dh-mobile-checkout__label">ORDER SUMMARY</p>
+      <div class="dh-mobile-checkout__row">
+        <div class="dh-mobile-checkout__total">
+          <span>TOTAL</span>
+          <strong>{{ cart.total_price | money }}</strong>
+        </div>
+        <button type="submit" name="checkout" form="dh-cart-form" class="dh-btn-checkout">Checkout</button>
+      </div>
+    </div>
+  {%- endif -%}
+</div>
+
+{% stylesheet %}
+  .dh-cart {
+    --bg: #0E1A17;
+    --bg-soft: #142621;
+    --tangerine: #FF6B35;
+    --lime: #C6F135;
+    --hotpink: #FF2E63;
+    --cream: #FFF8ED;
+    --cream-dim: #C9C2B3;
+    --line: rgba(255,248,237,0.14);
+
+    background: #000;
+    font-family: 'Inter', sans-serif;
+  }
+  .dh-cart *, .dh-cart *::before, .dh-cart *::after { box-sizing: border-box; }
+  .dh-cart.is-loading .dh-cart-page { opacity: 0.6; pointer-events: none; transition: opacity 0.15s ease; }
+
+  /* ---- page shell ---- */
+  .dh-cart-page {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: clamp(2rem, 5vw, 3.5rem) clamp(1.5rem, 4vw, 3rem) 6rem;
+    background: var(--bg);
+    min-height: 60vh;
+  }
+  .dh-cart-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-weight: 400;
+    font-size: clamp(48px, 7vw, 84px);
+    line-height: 0.9;
+    color: var(--cream);
+    letter-spacing: 1px;
+    margin: 0 0 clamp(2rem, 5vw, 3rem);
+    text-transform: none;
+  }
+  .dh-cart-title .dh-accent { color: var(--tangerine); }
+  .dh-cart-msg {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--hotpink);
+    margin: -1rem 0 1.5rem;
+  }
+
+  /* ---- layout ---- */
+  .dh-cart-layout {
+    display: grid;
+    grid-template-columns: 1.6fr 1fr;
+    gap: clamp(1.5rem, 4vw, 2.5rem);
+    align-items: start;
+  }
+  .dh-cart-items {
+    display: flex;
+    flex-direction: column;
+    gap: 1.1rem;
+  }
+
+  /* ---- cart item (ticket stub) ---- */
+  .dh-cart-item {
+    position: relative;
+    background: var(--cream);
+    border-radius: 12px;
+    padding: 1rem 1.1rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    box-shadow: 0 14px 30px rgba(0,0,0,0.25);
+  }
+  .dh-cart-item:nth-child(odd) { transform: rotate(-0.6deg); }
+  .dh-cart-item:nth-child(even) { transform: rotate(0.6deg); }
+
+  .dh-cart-item__thumb {
+    width: 72px;
+    height: 72px;
+    border-radius: 8px;
+    object-fit: cover;
+    flex-shrink: 0;
+  }
+  .dh-cart-item__thumb--empty { background: #e4dccb; }
+
+  .dh-cart-item__info { flex: 1; min-width: 0; }
+  .dh-cart-item__name {
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+    font-size: 1rem;
+    color: var(--bg);
+    margin-bottom: 4px;
+  }
+  .dh-cart-item__name a {
+    color: inherit;
+    text-decoration: none;
+  }
+  .dh-cart-item__meta {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: #993C1D;
+    margin-bottom: 10px;
+  }
+  .dh-qty-stepper {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--bg-soft);
+    border-radius: 999px;
+    padding: 4px 10px;
+  }
+  .dh-qty-btn {
+    background: none;
+    border: none;
+    color: var(--cream);
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    width: 18px;
+    padding: 0;
+    line-height: 1;
+  }
+  .dh-qty-btn:hover { color: var(--lime); }
+  .dh-qty-value {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--cream);
+    min-width: 12px;
+    text-align: center;
+  }
+
+  .dh-cart-item__side {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 10px;
+    flex-shrink: 0;
+  }
+  .dh-remove-btn {
+    background: none;
+    border: none;
+    color: #6b6558;
+    font-size: 18px;
+    line-height: 1;
+    padding: 0;
+    cursor: pointer;
+    transition: color 0.2s ease;
+  }
+  .dh-remove-btn:hover { color: var(--hotpink); }
+  .dh-cart-item__price {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 700;
+    font-size: 0.95rem;
+    color: var(--bg);
+    text-align: right;
+  }
+  .dh-cart-item__price s {
+    display: block;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: #8b8578;
+  }
+
+  /* ---- order summary (receipt) ---- */
+  .dh-order-summary {
+    background: var(--bg-soft);
+    border: 1px dashed var(--line);
+    border-radius: 12px;
+    padding: 1.4rem 1.5rem;
+  }
+  .dh-order-summary__label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 1.5px;
+    color: var(--lime);
+    margin: 0 0 1rem;
+  }
+  .dh-order-row {
+    display: flex;
+    justify-content: space-between;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--cream-dim);
+    margin-bottom: 0.6rem;
+  }
+  .dh-order-total {
+    border-top: 1px dashed var(--line);
+    padding-top: 0.8rem;
+    margin-top: 0.4rem;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--cream);
+  }
+  .dh-btn-checkout {
+    width: 100%;
+    margin-top: 1.1rem;
+    background: var(--lime);
+    color: var(--bg);
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700;
+    font-size: 14px;
+    padding: 14px 0;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: 0 6px 0 rgba(0,0,0,0.25);
+  }
+  .dh-btn-checkout:hover { transform: translateY(-2px); }
+  .dh-btn-checkout:active { transform: translateY(2px); box-shadow: 0 2px 0 rgba(0,0,0,0.25); }
+
+  /* ---- empty state ---- */
+  .dh-cart-empty {
+    text-align: center;
+    padding: clamp(3rem, 8vw, 6rem) 1rem;
+  }
+  .dh-cart-empty__headline {
+    font-family: 'Bebas Neue', sans-serif;
+    font-weight: 400;
+    font-size: clamp(48px, 9vw, 96px);
+    line-height: 0.9;
+    color: var(--cream);
+    letter-spacing: 1px;
+    margin: 0 0 1.5rem;
+    text-transform: none;
+  }
+  .dh-cart-empty__headline .dh-outline {
+    color: transparent;
+    -webkit-text-stroke: 2.1px var(--tangerine);
+  }
+  @media (max-width: 960px) {
+    .dh-cart-empty__headline .dh-outline {
+      text-shadow:
+        -1px -1px 0 var(--tangerine),
+         1px -1px 0 var(--tangerine),
+        -1px  1px 0 var(--tangerine),
+         1px  1px 0 var(--tangerine);
+    }
+  }
+  .dh-cart-empty__sub {
+    font-size: 16px;
+    color: var(--cream-dim);
+    margin: 0 0 2rem;
+  }
+  .dh-cart-empty__actions {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.25rem;
+  }
+  .dh-btn-primary {
+    background: var(--lime);
+    color: var(--bg);
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700;
+    font-size: 15px;
+    padding: 18px 34px;
+    border-radius: 10px;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    transition: transform .2s ease, box-shadow .2s ease;
+    box-shadow: 0 8px 0 rgba(0,0,0,0.25);
+  }
+  .dh-btn-primary:hover { transform: translateY(-3px); box-shadow: 0 11px 0 rgba(0,0,0,0.25); }
+  .dh-btn-primary:active { transform: translateY(2px); box-shadow: 0 3px 0 rgba(0,0,0,0.25); }
+  .dh-btn-primary svg { transition: transform .2s ease; }
+  .dh-btn-primary:hover svg { transform: translateX(4px); }
+
+  /* ---- mobile sticky checkout bar ---- */
+  .dh-mobile-checkout { display: none; }
+
+  .dh-cart a:focus-visible,
+  .dh-cart button:focus-visible {
+    outline: 2px solid var(--lime);
+    outline-offset: 3px;
+  }
+
+  @media (max-width: 900px) {
+    .dh-cart-layout { grid-template-columns: 1fr; }
+    .dh-order-summary { display: none; }
+
+    .dh-mobile-checkout {
+      display: flex;
+      flex-direction: column;
+      position: fixed;
+      bottom: 0.9rem;
+      left: 0.9rem;
+      right: 0.9rem;
+      background: var(--bg-soft);
+      border: 1px dashed var(--line);
+      border-radius: 12px;
+      padding: 1rem 1.1rem;
+      z-index: 900;
+      box-shadow: 0 -8px 24px rgba(0,0,0,0.3);
+    }
+    .dh-mobile-checkout__label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 1.5px;
+      color: var(--lime);
+      margin: 0 0 0.7rem;
+    }
+    .dh-mobile-checkout__row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+    }
+    .dh-mobile-checkout__total {
+      display: flex;
+      flex-direction: column;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: var(--cream-dim);
+    }
+    .dh-mobile-checkout__total strong {
+      font-size: 17px;
+      color: var(--cream);
+    }
+    .dh-mobile-checkout .dh-btn-checkout {
+      width: auto;
+      margin-top: 0;
+      padding: 12px 24px;
+    }
+    .dh-cart-page { padding-bottom: 8rem; }
+  }
+{% endstylesheet %}
+
+<script>
+  (function () {
+    var sectionId = '{{ section.id }}';
+    var root = document.querySelector('[data-dh-cart="' + sectionId + '"]');
+    if (!root) return;
+
+    function refresh() {
+      return fetch('{{ routes.cart_url }}?section_id=' + sectionId, { cache: 'no-store' })
+        .then(function (res) { return res.text(); })
+        .then(function (html) {
+          var doc = new DOMParser().parseFromString(html, 'text/html');
+          var fresh = doc.querySelector('[data-dh-cart="' + sectionId + '"]');
+          if (fresh) root.innerHTML = fresh.innerHTML;
+        });
+    }
+
+    function showMessage(text) {
+      var msg = root.querySelector('[data-dh-cart-msg]');
+      if (!msg) return;
+      msg.textContent = text;
+      msg.hidden = false;
+    }
+
+    function updateLine(line, quantity) {
+      root.classList.add('is-loading');
+      return fetch('{{ routes.cart_change_url }}.js', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify({ line: Number(line), quantity: Number(quantity) })
+      })
+        .then(function (res) {
+          if (!res.ok) throw new Error('change failed');
+          return res.json();
+        })
+        .then(function (cart) {
+          document.querySelectorAll('.dh-cart-badge').forEach(function (b) {
+            b.textContent = cart.item_count;
+          });
+          return refresh();
+        })
+        .catch(function () {
+          return refresh().then(function () {
+            showMessage("Couldn't update the bag. That may be all the stock we have.");
+          });
+        })
+        .then(function () {
+          root.classList.remove('is-loading');
+        });
+    }
+
+    root.addEventListener('click', function (e) {
+      var btn = e.target.closest('[data-dh-line][data-dh-qty]');
+      if (!btn || root.classList.contains('is-loading')) return;
+      updateLine(btn.getAttribute('data-dh-line'), btn.getAttribute('data-dh-qty'));
+    });
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Dripstone Cart",
+  "settings": [
+    { "type": "header", "content": "Cart title" },
+    { "type": "text", "id": "title_a", "label": "Title, first word", "default": "YOUR" },
+    { "type": "text", "id": "title_b", "label": "Title, orange word", "default": "BAG." },
+
+    { "type": "header", "content": "Empty cart" },
+    { "type": "text", "id": "empty_a", "label": "Headline, first part", "default": "BAG'S" },
+    { "type": "text", "id": "empty_b", "label": "Headline, outlined part", "default": "EMPTY." },
+    { "type": "text", "id": "empty_sub", "label": "Subtext", "default": "Nothing reserved yet. The drop won't wait." },
+    { "type": "text", "id": "shop_label", "label": "First button", "default": "Shop the Drop" },
+    { "type": "text", "id": "offers_label", "label": "Second button", "default": "Max on Offers" }
+  ],
+  "presets": [{ "name": "Dripstone Cart" }]
+}
+{% endschema %}

@@ -1,0 +1,50 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "name": "t:sections.header.name",
+  "type": "header",
+  "sections": {
+    "dh_header_JWnr99": {
+      "type": "dh-header",
+      "name": "Dripstone Header",
+      "settings": {
+        "menu": "main-menu",
+        "brand_name": "",
+        "brand_mark": ""
+      }
+    },
+    "hero_7QtgWL": {
+      "type": "hero",
+      "name": "Dripstone Hero",
+      "settings": {
+        "marquee_1": "NEW DROP JUST LANDED",
+        "marquee_2": "FREE SHIPPING OVER $75",
+        "marquee_3": "LIMITED STOCK — MOVE FAST",
+        "eyebrow": "DROP 014 — LIVE NOW",
+        "line_1": "NEW",
+        "line_2": "DROP.",
+        "line_3": "JUST LANDED.",
+        "subtext": "112 pieces. No restocks. Everything you see sells out by Friday — the ones who move first get to keep it.",
+        "button_label": "Shop the Drop",
+        "button_link": "",
+        "tag_1_label": "Best seller",
+        "tag_1_was": "$129",
+        "tag_1_price": "$89",
+        "tag_2_label": "Only 6 left",
+        "tag_2_price": "$64",
+        "stock_text": "214 sold today"
+      }
+    }
+  },
+  "order": [
+    "dh_header_JWnr99",
+    "hero_7QtgWL"
+  ]
+}

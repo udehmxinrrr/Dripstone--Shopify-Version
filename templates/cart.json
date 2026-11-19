@@ -1,0 +1,11 @@
+{
+  "sections": {
+    "dh-cart": {
+      "type": "dh-cart",
+      "settings": {}
+    }
+  },
+  "order": [
+    "dh-cart"
+  ]
+}

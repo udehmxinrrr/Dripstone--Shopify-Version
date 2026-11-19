@@ -1,0 +1,256 @@
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+<footer class="dh-footer">
+  <div class="dh-footer__inner">
+
+    <div class="dh-footer-brand">
+      <a href="{{ routes.root_url }}" class="dh-logo">{{ section.settings.logo_a }}<span>{{ section.settings.logo_b }}</span></a>
+      {%- if section.settings.blurb != blank -%}
+        <p>{{ section.settings.blurb }}</p>
+      {%- endif -%}
+
+      <div class="dh-footer-social">
+        {%- if section.settings.instagram != blank -%}
+          <a href="{{ section.settings.instagram }}" aria-label="Instagram" class="dh-social-icon" target="_blank" rel="noopener">
+            <img class="dh-icon-default" src="https://cdn.simpleicons.org/instagram/C6F135" alt="" width="16" height="16" loading="lazy">
+            <img class="dh-icon-hover" src="https://cdn.simpleicons.org/instagram/0E1A17" alt="" width="16" height="16" loading="lazy">
+          </a>
+        {%- endif -%}
+        {%- if section.settings.facebook != blank -%}
+          <a href="{{ section.settings.facebook }}" aria-label="Facebook" class="dh-social-icon" target="_blank" rel="noopener">
+            <img class="dh-icon-default" src="https://cdn.simpleicons.org/facebook/C6F135" alt="" width="16" height="16" loading="lazy">
+            <img class="dh-icon-hover" src="https://cdn.simpleicons.org/facebook/0E1A17" alt="" width="16" height="16" loading="lazy">
+          </a>
+        {%- endif -%}
+        {%- if section.settings.x != blank -%}
+          <a href="{{ section.settings.x }}" aria-label="X / Twitter" class="dh-social-icon" target="_blank" rel="noopener">
+            <img class="dh-icon-default" src="https://cdn.simpleicons.org/x/C6F135" alt="" width="16" height="16" loading="lazy">
+            <img class="dh-icon-hover" src="https://cdn.simpleicons.org/x/0E1A17" alt="" width="16" height="16" loading="lazy">
+          </a>
+        {%- endif -%}
+      </div>
+    </div>
+
+    <div class="dh-footer-col">
+      <h4>{{ section.settings.shop_heading }}</h4>
+      <ul>
+        {%- for link in linklists[section.settings.shop_menu].links -%}
+          <li><a href="{{ link.url }}">{{ link.title }}</a></li>
+        {%- endfor -%}
+      </ul>
+    </div>
+
+    <div class="dh-footer-col">
+      <h4>{{ section.settings.company_heading }}</h4>
+      <ul>
+        {%- for link in linklists[section.settings.company_menu].links -%}
+          <li><a href="{{ link.url }}">{{ link.title }}</a></li>
+        {%- endfor -%}
+      </ul>
+    </div>
+
+    <div class="dh-footer-col">
+      <h4>{{ section.settings.contact_heading }}</h4>
+      <ul class="dh-footer-contact">
+        {%- if section.settings.location != blank -%}<li>{{ section.settings.location }}</li>{%- endif -%}
+        {%- if section.settings.website != blank -%}<li>{{ section.settings.website }}</li>{%- endif -%}
+        {%- if section.settings.phone != blank -%}<li>{{ section.settings.phone }}</li>{%- endif -%}
+      </ul>
+    </div>
+
+  </div>
+
+  <div class="dh-footer-bottom">
+    <p>&copy; {{ 'now' | date: '%Y' }} {{ section.settings.copyright_name }}. All rights reserved.</p>
+    <ul class="dh-footer-legal">
+      {%- if shop.privacy_policy != blank -%}
+        <li><a href="{{ shop.privacy_policy.url }}">Privacy Policy</a></li>
+      {%- endif -%}
+      {%- if shop.terms_of_service != blank -%}
+        <li><a href="{{ shop.terms_of_service.url }}">Terms of Service</a></li>
+      {%- endif -%}
+    </ul>
+  </div>
+</footer>
+
+{% stylesheet %}
+  .dh-footer {
+    --bg: #0E1A17;
+    --tangerine: #FF6B35;
+    --lime: #C6F135;
+    --cream: #FFF8ED;
+    --white: #ffffff;
+
+    background: var(--bg);
+    color: var(--cream);
+    font-family: 'Inter', sans-serif;
+    padding: clamp(2.5rem, 5vw, 4rem) clamp(1.5rem, 4vw, 3rem) 0;
+  }
+  .dh-footer *, .dh-footer *::before, .dh-footer *::after { box-sizing: border-box; }
+  .dh-footer ul { list-style: none; margin: 0; padding: 0; }
+
+  .dh-footer__inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1.4fr 1fr 1fr 1.2fr;
+    gap: clamp(2rem, 4vw, 3rem);
+    padding-bottom: clamp(2rem, 4vw, 3rem);
+  }
+
+  /* ---- brand ---- */
+  .dh-logo {
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+    font-size: 1.4rem;
+    color: var(--tangerine);
+    text-decoration: none;
+    letter-spacing: 0.5px;
+  }
+  .dh-logo span { color: var(--white); }
+  .dh-footer-brand p {
+    margin: 0.8rem 0 0;
+    font-size: 0.85rem;
+    line-height: 1.6;
+    color: rgba(245, 240, 230, 0.65);
+    max-width: 260px;
+  }
+  .dh-footer-social {
+    display: flex;
+    gap: 0.75rem;
+    margin-top: 1.2rem;
+  }
+  .dh-footer-social a {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    border: 1px solid var(--bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--lime);
+    text-decoration: none;
+    font-size: 0.85rem;
+    transition: background 0.2s ease, border-color 0.2s ease;
+  }
+  .dh-footer-social a:hover {
+    background: var(--lime);
+    border-color: var(--lime);
+    color: var(--bg);
+  }
+  .dh-social-icon { position: relative; }
+  .dh-social-icon img {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    transition: opacity 0.2s ease;
+  }
+  .dh-social-icon .dh-icon-hover { opacity: 0; }
+  .dh-social-icon:hover .dh-icon-default { opacity: 0; }
+  .dh-social-icon:hover .dh-icon-hover { opacity: 1; }
+
+  /* ---- columns ---- */
+  .dh-footer-col h4 {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    color: var(--lime);
+    margin: 0 0 1rem;
+  }
+  .dh-footer-col li { margin-bottom: 0.65rem; }
+  .dh-footer-col a {
+    color: rgba(245, 240, 230, 0.65);
+    text-decoration: none;
+    font-size: 0.85rem;
+    transition: color 0.2s ease;
+  }
+  .dh-footer-col a:hover { color: var(--tangerine); }
+  .dh-footer-contact li {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+    font-size: 0.85rem;
+    color: rgba(245, 240, 230, 0.65);
+    line-height: 1.5;
+  }
+
+  /* ---- bottom bar ---- */
+  .dh-footer-bottom {
+    border-top: 1px solid rgba(245, 240, 230, 0.12);
+    padding: 1.1rem 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+  .dh-footer-bottom p {
+    margin: 0;
+    font-size: 0.78rem;
+    color: rgba(245, 240, 230, 0.5);
+  }
+  .dh-footer-legal {
+    display: flex;
+    gap: 1.25rem;
+  }
+  .dh-footer-legal a {
+    font-size: 0.78rem;
+    color: rgba(245, 240, 230, 0.5);
+    text-decoration: none;
+  }
+  .dh-footer-legal a:hover { color: var(--lime); }
+
+  .dh-footer a:focus-visible {
+    outline: 2px solid var(--lime);
+    outline-offset: 3px;
+  }
+
+  /* ---- responsive ---- */
+  @media (max-width: 900px) {
+    .dh-footer__inner { grid-template-columns: 1fr 1fr; }
+  }
+  @media (max-width: 560px) {
+    .dh-footer__inner { grid-template-columns: 1fr; }
+    .dh-footer-brand p { max-width: none; }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Dripstone Footer",
+  "settings": [
+    { "type": "header", "content": "Brand" },
+    { "type": "text", "id": "logo_a", "label": "Logo, orange part", "default": "Drip" },
+    { "type": "text", "id": "logo_b", "label": "Logo, white part", "default": "Stone" },
+    { "type": "textarea", "id": "blurb", "label": "Description", "default": "Streetwear that doesn't ask permission. Born on the block, built for the culture — every piece is made for movement, made to be seen, made to last. Heavyweight fabrics. Oversized fits. Details that hit different up close." },
+
+    { "type": "header", "content": "Social links" },
+    { "type": "url", "id": "instagram", "label": "Instagram" },
+    { "type": "url", "id": "facebook", "label": "Facebook" },
+    { "type": "url", "id": "x", "label": "X / Twitter" },
+
+    { "type": "header", "content": "Link columns" },
+    { "type": "text", "id": "shop_heading", "label": "First column heading", "default": "Shop" },
+    { "type": "link_list", "id": "shop_menu", "label": "First column menu", "default": "main-menu" },
+    { "type": "text", "id": "company_heading", "label": "Second column heading", "default": "Company" },
+    { "type": "link_list", "id": "company_menu", "label": "Second column menu", "default": "footer" },
+
+    { "type": "header", "content": "Contact" },
+    { "type": "text", "id": "contact_heading", "label": "Heading", "default": "Stay in touch" },
+    { "type": "text", "id": "location", "label": "Location", "default": "Nairobi, Kenya" },
+    { "type": "text", "id": "website", "label": "Website", "default": "DripStone.co.ke" },
+    { "type": "text", "id": "phone", "label": "Phone", "default": "+254 712 345 678" },
+
+    { "type": "header", "content": "Bottom bar" },
+    { "type": "text", "id": "copyright_name", "label": "Copyright name", "default": "DripStone" }
+  ],
+  "presets": [{ "name": "Dripstone Footer" }]
+}
+{% endschema %}
