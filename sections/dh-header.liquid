@@ -52,6 +52,10 @@
 
 {% stylesheet %}
   /* keep the header stuck to the top of the page */
+  #MainContent
+  :has(.dh-hero, .dhp-products, .dho-products, .dhc-products, .dhk-contact, .dh-cart, .dh-subscribe) {
+  background: #142621;}
+
   .shopify-section:has(> .dh-header) {
     position: sticky;
     top: 0;
